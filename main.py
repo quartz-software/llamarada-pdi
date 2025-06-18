@@ -11,7 +11,7 @@ app = FastAPI(title="Image Processing API", version="1.0")
 
 @app.post("/procesar-imagen")
 async def procesar_imagen(file: UploadFile = File(...)):
-    if file.content_type("image/"):
+    if file.content_type.startswith("image/"):
         print("El archivo debe ser una imagen")
         print(file.content_type)
         print(file.filename)
