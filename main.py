@@ -22,7 +22,7 @@ async def procesar_imagen(file: UploadFile = File(...)):
 
     try:
         # Abrir imagen desde los bytes
-        pil_img = Image.open(io.BytesIO(imagen_bytes))
+        pil_img = Image.open(io.BytesIO(imagen_bytes)).convert("RGB")
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error al abrir la imagen: {e}")
 
