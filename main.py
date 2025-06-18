@@ -11,8 +11,10 @@ app = FastAPI(title="Image Processing API", version="1.0")
 
 @app.post("/procesar-imagen")
 async def procesar_imagen(file: UploadFile = File(...)):
-    if file.content_type and not file.content_type.startswith("image/"):
+    if file.content_type("image/"):
         print("El archivo debe ser una imagen")
+        print(file.content_type)
+        print(file.filename)
         raise HTTPException(status_code=400, detail="El archivo debe ser una imagen")
         
     # Leer el contenido del archivo
@@ -20,7 +22,7 @@ async def procesar_imagen(file: UploadFile = File(...)):
 
     try:
         # Abrir imagen desde los bytes
-        pil_img = Image.open(io.BytesIO(imagen_bytes)).convert("RGB")
+        pil_img = Image.open(io.BytesIO(imagen_bytes))
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error al abrir la imagen: {e}")
 
