@@ -2,34 +2,36 @@ from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.responses import StreamingResponse
 from PIL import Image
 import io
+from skimage import io, measure
+import numpy as np
+import cv2
+
 
 app = FastAPI(title="Image Processing API", version="1.0")
 
 @app.post("/procesar-imagen")
 async def procesar_imagen(file: UploadFile = File(...)):
-    if not file.content_type.startswith("image/"):
+    if file.content_type and not file.content_type.startswith("image/"):
         print("El archivo debe ser una imagen")
         raise HTTPException(status_code=400, detail="El archivo debe ser una imagen")
         
     # Leer el contenido del archivo
     imagen_bytes = await file.read()
 
-    # try:
-    #     # Abrir imagen desde los bytes
-    #     imagen = Image.open(io.BytesIO(imagen_bytes))
-    # except Exception as e:
-    #     raise HTTPException(status_code=400, detail=f"Error al abrir la imagen: {e}")
+    try:
+        # Abrir imagen desde los bytes
+        pil_img = Image.open(io.BytesIO(imagen_bytes)).convert("RGB")
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Error al abrir la imagen: {e}")
 
     # Procesar imagen: convertir a escala de grises
     # imagen_gris = imagen.convert("L")
 #---------------------------
-    from skimage import io, measure
-    import numpy as np
-    import cv2
 
+    img_bgr=cv2.cvtColor(np.array(pil_img),cv2.COLOR_RGB2BGR)
     # image = cv2.imread('../imagenes/Habitacion2.jpg')
-    image=imagen
-    gray_image= cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
+
+    gray_image= cv2.cvtColor(img_bgr,cv2.COLOR_BGR2GRAY)
     _,binarizada=cv2.threshold(gray_image,127,255,cv2.THRESH_BINARY_INV)
     labels = measure.label(binarizada ,connectivity=1)
     borders = np.max(labels)
