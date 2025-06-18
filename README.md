@@ -21,13 +21,13 @@ source venv/Scripts/activate
 ## instalar dependencias
 
 ```sh
-pip install -r requeriments.txt
+pip install -r requirements.txt
 ```
 
 ## actualizar dependencias
 
 ```sh
-pip freeze > requeriments.txt
+pip freeze > requirements.txt
 ```
 
 ## levantar el servidor
