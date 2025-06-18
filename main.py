@@ -1,16 +1,17 @@
-from fastapi import FastAPI, File, UploadFile, HTTPException
+from fastapi import FastAPI, File, Form, UploadFile, HTTPException
 from fastapi.responses import StreamingResponse
 from PIL import Image
 import io
 from skimage import measure
 import numpy as np
 import cv2
+from modules import dbconnection
 
 
 app = FastAPI(title="Image Processing API", version="1.0")
 
 @app.post("/procesar-imagen")
-async def procesar_imagen(file: UploadFile = File(...)):
+async def procesar_imagen(id: int = Form(...), file: UploadFile = File(...)):
     if not file.content_type.startswith("image/"):
         print("El archivo debe ser una imagen")
         print(file.content_type)
@@ -44,8 +45,17 @@ async def procesar_imagen(file: UploadFile = File(...)):
         print(f"La imagen tiene {borders} bordes, lo cual significa que la habitacion esta limpia")
     else:
         print(f"La imagen tiene {borders} bordes, lo cual significa que la habitacion esta desordenada")
-
-#---------------------------
+        try:
+            conn = await dbconnection.get_db_connection()
+            await conn.execute("""
+                UPDATE "imagen-pdi"
+                SET idEstado = 2
+                WHERE id = $1
+            """
+            , id)  
+            await conn.close()
+        except Exception as e:
+            print(f"Error al actualizar la base de datos: {e}")
 
 
     # Guardar la imagen procesada en un buffer
