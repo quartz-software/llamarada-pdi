@@ -2,7 +2,7 @@ from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.responses import StreamingResponse
 from PIL import Image
 import io
-from skimage import io, measure
+from skimage import measure
 import numpy as np
 import cv2
 
