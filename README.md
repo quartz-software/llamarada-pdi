@@ -24,6 +24,12 @@ source venv/Scripts/activate
 pip install -r requeriments.txt
 ```
 
+## actualizar dependencias
+
+```sh
+pip freeze > requeriments.txt
+```
+
 ## levantar el servidor
 
 ```sh

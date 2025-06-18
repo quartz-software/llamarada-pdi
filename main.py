@@ -1,7 +1,9 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.responses import StreamingResponse
 from PIL import Image
-import io
+from skimage import io, measure, color,filters
+import numpy as np
+import cv2
 
 app = FastAPI(title="Image Processing API", version="1.0")
 
@@ -22,10 +24,6 @@ async def procesar_imagen(file: UploadFile = File(...)):
     # Procesar imagen: convertir a escala de grises
     # imagen_gris = imagen.convert("L")
 #---------------------------
-    from skimage import io, measure, color,filters
-    import numpy as np
-    import cv2
-
     # image = cv2.imread('../imagenes/Habitacion2.jpg')
     image=imagen
     gray_image= cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
@@ -47,7 +45,7 @@ async def procesar_imagen(file: UploadFile = File(...)):
     buffer = io.BytesIO()
     gray_image.save(buffer, format="PNG")
     buffer.seek(0)
-
+    
     return StreamingResponse(buffer, media_type="image/png")
 
 @app.get("/ping")
