@@ -50,10 +50,10 @@ async def procesar_imagen(file: UploadFile = File(...)):
 
     # Guardar la imagen procesada en un buffer
     buffer = io.BytesIO()
-    gray_image.save(buffer, format="PNG")
+    Image.fromarray(gray_image).save(buffer, format="PNG")
     buffer.seek(0)
 
-    return StreamingResponse(buffer, media_type="image/png")
+    # return StreamingResponse(buffer, media_type="image/png")
 
 @app.get("/ping")
 def ping():
