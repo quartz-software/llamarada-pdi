@@ -48,7 +48,7 @@ async def procesar_imagen(id: int = Form(...), file: UploadFile = File(...)):
         try:
             conn = await dbconnection.get_db_connection()
             await conn.execute("""
-                UPDATE "imagen-pdi"
+                UPDATE "habitacion"
                 SET idEstado = 2
                 WHERE id = $1
             """
